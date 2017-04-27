@@ -1,0 +1,96 @@
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+
+public class Solution {
+    public static void main(String[] args) throws UnsupportedEncodingException
+    {
+        BufferedReader reader = null;
+        String surl = null;
+
+        try
+        {
+            reader = new BufferedReader(new InputStreamReader(System.in));
+            surl = reader.readLine();
+        }
+        catch (IOException e)
+        {
+            System.out.println("Ошибка ввода строки");
+        }
+
+
+        URL url = null;
+        try
+        {
+            url = new URL(surl);
+        }
+        catch (MalformedURLException e)
+        {
+            System.out.println("Ошибка конвертации URL'а.");
+        }
+
+        String query = url.getQuery();
+        Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+        String[] pairs = query.split("&"); // Here we separate parameters from each other
+        for (String pair : pairs) 
+        {
+			// Try to separate the value from the parameter
+
+
+            try
+            {
+                int idx = pair.indexOf("=");
+                query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+
+            }
+            catch (StringIndexOutOfBoundsException e)
+            {
+                query_pairs.put(URLDecoder.decode(pair, "UTF-8"), "");
+
+            }
+            
+        }
+
+        for (Map.Entry<String, String> pair : query_pairs.entrySet())
+        {
+            String key = pair.getKey();                      //key == parameter
+            System.out.print(key + " ");						// here we are print our parameters
+        }
+        
+        System.out.println("");
+        
+        for (Map.Entry<String, String> pair : query_pairs.entrySet())
+        {
+            if (pair.getKey().equals("obj"))				// Here we are cheking if parameter equals "obj" and try parse it to double
+            {
+                try
+                {
+                    alert(Double.parseDouble(pair.getValue()));
+                }
+                catch (Exception e){
+                    alert(pair.getValue());
+                }
+            }
+
+        }
+
+
+		// below this line we are going to interpret parameters
+    }
+
+    public static void alert(double value) {
+        System.out.println("double " + value);
+    }
+
+    public static void alert(String value) {
+        System.out.println("String " + value);
+    }
+}
